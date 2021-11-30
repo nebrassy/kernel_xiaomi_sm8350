@@ -171,6 +171,23 @@ static ssize_t fts_gesture_buf_store(
 	return -EPERM;
 }
 
+static ssize_t fts_double_tap_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", fts_data->gesture_mode);
+}
+
+static ssize_t fts_double_tap_store(struct device *dev, struct device_attribute *attr,
+					const char *buf, size_t count)
+{
+	int rc, val;
+
+	rc = kstrtoint(buf, 10, &val);
+	if (rc)
+		return -EINVAL;
+
+	fts_update_gesture_state(fts_data, GESTURE_DOUBLETAP, !!val);
+	return count;
+}
 
 /* sysfs gesture node
  *   read example: cat  fts_gesture_mode       ---read gesture mode
@@ -185,9 +202,13 @@ static DEVICE_ATTR(fts_gesture_mode, S_IRUGO | S_IWUSR, fts_gesture_show,
 static DEVICE_ATTR(fts_gesture_buf, S_IRUGO | S_IWUSR,
 				   fts_gesture_buf_show, fts_gesture_buf_store);
 
+static DEVICE_ATTR(double_tap, S_IRUGO | S_IWUSR,
+				   fts_double_tap_show, fts_double_tap_store);
+
 static struct attribute *fts_gesture_mode_attrs[] = {
 	&dev_attr_fts_gesture_mode.attr,
 	&dev_attr_fts_gesture_buf.attr,
+	&dev_attr_double_tap.attr,
 	NULL,
 };
 
