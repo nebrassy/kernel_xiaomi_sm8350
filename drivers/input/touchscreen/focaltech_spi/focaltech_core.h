@@ -107,8 +107,6 @@
 #define FTS_LOCKDOWN_INFO_ADDR                      0x1F000
 #define FTS_LOCKDOWN_INFO_SIZE                      8
 
-#define FTS_XIAOMI_TOUCHFEATURE
-
 /*****************************************************************************
 *  Alternative mode (When something goes wrong, the modules may be able to solve the problem.)
 *****************************************************************************/
@@ -273,15 +271,12 @@ struct fts_ts_data {
 #endif
 	struct dentry *tpdbg_dentry;
 	bool poweroff_on_sleep;
-	bool gamemode_enabled;
 	bool is_expert_mode;
 	u8 gesture_status;
 	struct mutex cmd_update_mutex;
 	int palm_sensor_switch;
 	struct work_struct power_supply_work;
 	struct notifier_block power_supply_notifier;
-	int clicktouch_count;
-	int clicktouch_num;
 };
 
 enum GESTURE_MODE_TYPE {
