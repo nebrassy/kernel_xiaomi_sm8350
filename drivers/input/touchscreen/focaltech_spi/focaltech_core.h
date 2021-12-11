@@ -212,7 +212,9 @@ struct fts_hw_info {
 struct fts_ts_data {
 	struct i2c_client *client;
 	struct spi_device *spi;
+	struct class *class;
 	struct device *dev;
+	struct device *dev_sysfs;
 	struct input_dev *input_dev;
 	struct fts_ts_platform_data *pdata;
 	struct fts_hw_info *hw_info;

@@ -1850,6 +1850,8 @@ static int fts_ts_remove_entry(struct fts_ts_data *ts_data)
 #if FTS_POWER_SOURCE_CUST_EN
 	fts_power_source_exit(ts_data);
 #endif
+	
+	device_destroy(ts_data->class, 0);
 
 	kfree_safe(ts_data->point_buf);
 	kfree_safe(ts_data->events);
@@ -2015,7 +2017,13 @@ static int fts_ts_probe(struct spi_device *spi)
 	ts_data->poweroff_on_sleep = false;
 
 	ts_data->bus_type = BUS_TYPE_SPI_V2;
-	spi_set_drvdata(spi, ts_data);
+	ts_data->class = class_create(THIS_MODULE, "touch");
+	ts_data->dev_sysfs = device_create(ts_data->class, NULL, 0, ts_data, "tp_dev");
+	if (IS_ERR(ts_data->dev)) {
+		FTS_ERROR("Failed to create device for the sysfs!");
+		return -ENODEV;
+	}
+	dev_set_drvdata(ts_data->dev, ts_data);
 
 	ret = fts_ts_probe_entry(ts_data);
 	if (ret) {
